@@ -1,0 +1,35 @@
+import java.sql.*;
+
+public class RegisterTableValidation {
+    public boolean validate(int  t) {
+        int u = 0;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/lms", "root", "root");
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("select reg_no from book_register;");
+
+            while (rs.next()) {
+                int c = rs.getInt(1);
+                if (c == t){
+                    u +=1;
+                }
+
+
+
+            }
+        }catch(SQLException e){
+                System.out.println(e.getMessage());
+
+        } catch(ClassNotFoundException e){
+                System.out.println(e.getMessage());
+        }
+        if (u >0){
+            return true;
+        }else {
+
+            return false;
+        }
+    }
+}
