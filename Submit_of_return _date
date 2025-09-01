@@ -1,0 +1,127 @@
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
+
+
+
+
+public class ReturnbookTable extends JFrame implements ActionListener {
+    JFrame frame = new JFrame();
+    JTable table = new JTable();
+    JScrollPane scroll ;
+    JButton button = new JButton("Confirm");
+    static String a;
+    JPanel panel = new JPanel();
+    JPanel panel1 = new JPanel();
+    JButton button1 = new JButton("Back");
+    JPanel panel2 = new JPanel();
+    ReturnbookTable(String s){
+        try {
+            table = new JTable();
+            a=s;
+
+
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/lms", "root", "root");
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from book_register where reg_no='"+s+"';");
+            ResultSetMetaData rsmd = rs.getMetaData();
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            int cols = rsmd.getColumnCount();
+            String[] colname = new String[cols];
+            for (int i = 0; i < cols; i++) {
+                colname[i] = rsmd.getColumnName(i + 1);
+            }
+            model.setColumnIdentifiers(colname);
+
+            while (rs.next()) {
+                String reg_no = rs.getString(1);
+                String student_no = rs.getString(2);
+                String book_no = rs.getString(3);
+                String date_lending = rs.getString(4);
+                String date_return = rs.getString(5);
+                String[] row = {reg_no, student_no, book_no, date_lending, date_return};
+                model.addRow(row);
+            }
+        } catch (Exception x) {
+            System.out.println(x);
+        }
+        button = new JButton("Confirm");
+        button.setPreferredSize(new Dimension(100,30));
+        button.setFont(new Font("Times New Roman",Font.BOLD,20) );
+        button.setBorder(new LineBorder(Color.black,5));
+        button.setFocusable(false);
+        button.addActionListener((ActionListener) this);
+
+        button1.setPreferredSize(new Dimension(100,30));
+        button1.setFont(new Font("Times New Roman",Font.BOLD,20) );
+        button1.setBorder(new LineBorder(Color.black,5));
+        button1.setFocusable(false);
+        button1.addActionListener((ActionListener) this);
+
+        panel1.setLayout(new FlowLayout(FlowLayout.CENTER));
+        panel2.add(button1);
+
+        panel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        panel.add(button);
+
+
+
+        frame.setSize(new Dimension(800,800));
+        scroll = new JScrollPane(table);
+        scroll.setPreferredSize(new Dimension(800,300));
+        scroll.setEnabled(true);
+
+        panel1.add(scroll);
+
+
+        frame.setLayout(new GridLayout(3,1));
+        frame.setVisible(true);
+        frame.add(panel1);
+        frame.add(panel);
+        frame.add(panel2);
+
+
+
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == button) {
+            long millis = System.currentTimeMillis();
+            java.sql.Date date = new java.sql.Date(millis);
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection(
+                        "jdbc:mysql://localhost:3306/lms", "root", "root");
+                Statement stmt = con.createStatement();
+                Statement s = con.createStatement();
+                ResultSet rs = s.executeQuery("select Date_of_return from book_register where reg_no="+a+";");
+                rs.next();
+                if(rs.getString("Date_of_return")== null){
+                    stmt.execute("update book_register set Date_of_return = '"+date+"' where ( reg_no ="+a+");");
+                    JOptionPane.showMessageDialog(null, "Successful", "Notification", JOptionPane.PLAIN_MESSAGE);
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Book already returned", "Notification", JOptionPane.WARNING_MESSAGE);
+
+                }
+
+
+            } catch (Exception x) {
+                System.out.println(x.getMessage());
+            }
+        }
+        if (e.getSource() == button1) {
+            frame.dispose();
+        }
+
+    }
+}
