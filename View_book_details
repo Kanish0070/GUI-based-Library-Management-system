@@ -1,0 +1,43 @@
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
+
+public class Table1  {
+    JFrame frame = new JFrame();
+    JTable table = new JTable();
+    JScrollPane scroll ;
+    Table1(){
+        try {
+            table = new JTable();
+
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/lms", "root", "root");
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from book_info;");
+            ResultSetMetaData rsmd = rs.getMetaData();
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            int cols = rsmd.getColumnCount();
+            String[] colname = new String[cols];
+            for (int i = 0; i < cols; i++) {
+                colname[i] = rsmd.getColumnName(i + 1);
+            }
+            model.setColumnIdentifiers(colname);
+
+            while (rs.next()) {
+                String no = rs.getString(1);
+                String book_no = rs.getString(2);
+                String book_name = rs.getString(3);
+                String author_name = rs.getString(4);
+                String[] row = {no, book_no, book_name, author_name};
+                model.addRow(row);
+            }
+        } catch (Exception x) {
+            System.out.println(x);
+        }
+
+
