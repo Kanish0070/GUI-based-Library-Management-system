@@ -5,7 +5,7 @@ It has 3 database used.
 First one is storing Book details.
 The attributes are no, book_no , book_name , author_name , availaibility .
 
-Second one is maintaining the record of the lended books.
+Second one is book_register.This is maintaining the record of the lended books.
 The attributes are reg_no,student_no,book_no,date_of_lending.
 
 Third one is for student details record.
