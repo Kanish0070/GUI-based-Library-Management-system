@@ -1,0 +1,43 @@
+import javax.swing.*;
+import java.sql.*;
+import java.util.Random;
+
+public class AddBookFunction {
+    AddBookFunction(String s,String s1,JFrame frame){
+        int reg_no;
+        Random ran = new Random();
+        reg_no = ran.nextInt(100);
+        long millis = System.currentTimeMillis();
+        java.sql.Date date = new java.sql.Date(millis);
+
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/lms", "root", "root");
+            Statement st = con.createStatement();
+            Statement st1 = con.createStatement();
+            Statement st2 = con.createStatement();
+            ResultSet rs = st.executeQuery("select id_number from student_details where Student_name ='"+s+"';");
+            ResultSet rs1 = st1.executeQuery("select book_no from book_info where book_name ='"+s1+"';");
+            st2.execute("update book_info set availaibility = False where book_name ='"+s1+"';");
+            rs.next();
+            rs1.next();
+            int b = JOptionPane.showConfirmDialog(null,"Book availiable.do you want to lend it ?","Notification",JOptionPane.YES_NO_OPTION);
+            if(b==JOptionPane.YES_OPTION) {
+
+                st.execute("insert into  book_register(reg_no,student_no,book_no,date_of_lending) values(" + (reg_no + 1) + "," + rs.getInt(1) + "," + rs1.getInt(1) + ",'" + date + "');");
+                JOptionPane.showMessageDialog(null, "Successful:Transaction Id :"+(reg_no+1), "Notification", JOptionPane.PLAIN_MESSAGE);
+            }
+            else{
+                frame.dispose();
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error occurred: "+e.getMessage(), "Notification", JOptionPane.PLAIN_MESSAGE);
+        }catch (ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error occurred: "+e.getMessage(), "Notification", JOptionPane.PLAIN_MESSAGE);
+        }
+
+    }
+}
