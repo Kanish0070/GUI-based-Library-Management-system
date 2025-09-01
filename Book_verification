@@ -1,0 +1,44 @@
+import javax.swing.*;
+import java.sql.*;
+import java.util.Objects;
+
+public class AddBookVerfication {
+    public boolean AddBookFunction1(String s, String s1) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/lms", "root", "root");
+            Statement st = con.createStatement();
+            Statement st1 = con.createStatement();
+            ResultSet rs = st.executeQuery("select id_number from student_details where Student_name ='" + s + "';");
+            ResultSet rs1 = st1.executeQuery("select book_no,availaibility from book_info where book_name ='" + s1 + "';");
+            rs.next();
+            rs1.next();
+            if ((rs.getInt(1) > 0) && (rs1.getInt(1) > 0)) {
+                if ((rs1.getBoolean(2))) {
+                    return true;
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Book not available", "Notification", JOptionPane.WARNING_MESSAGE);
+                    return false;
+
+
+
+                }
+
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        JOptionPane.showMessageDialog(null, "Register to access this section", "Notification", JOptionPane.WARNING_MESSAGE);
+        return false;
+
+
+
+    }
+}
