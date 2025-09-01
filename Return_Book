@@ -1,0 +1,124 @@
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class ReturnBook extends JFrame implements ActionListener {
+    JFrame frame2;
+    JTextField text1;
+    JTextField text2;
+    JTextField text3;
+    JPanel panel;
+    JPanel panel1;
+    JPanel panel2;
+    JLabel label1;
+    JLabel label2;
+    JLabel label3;
+    JButton button;
+    JButton button1;
+    JPanel panel4;
+    JPanel panel3;
+    ReturnBook(){
+        button = new JButton("SUBMIT");
+        button.setPreferredSize(new Dimension(100,30));
+        button.setFont(new Font("Times New Roman",Font.BOLD,20) );
+        button.setBorder(new LineBorder(Color.black,5));
+        button.setFocusable(false);
+        button.addActionListener(this);
+
+        button1 = new JButton("Back");
+        button1.setPreferredSize(new Dimension(100,30));
+        button1.setFont(new Font("Times New Roman",Font.BOLD,20) );
+        button1.setBorder(new LineBorder(Color.black,5));
+        button1.setFocusable(false);
+        button1.addActionListener(this);
+
+        panel4 = new JPanel();
+        panel4.setLayout(new FlowLayout(FlowLayout.CENTER));
+        panel4.setBounds(0,0,100,100);
+        panel4.add(button1);
+
+        text1 = new JTextField();
+
+
+        label1 = new JLabel();
+        label2 = new JLabel();
+
+        label2.setBounds(0,0,50,20);
+        label2.setText("Returning Book");
+        label2.setFont(new Font("Times New Roman", Font.BOLD, 25));
+
+        panel1 = new JPanel();
+        panel1.setLayout(new FlowLayout(FlowLayout.CENTER));
+        panel1.setBounds(0,0,100,100);
+        panel1.add(label2);
+
+
+
+
+        label1.setBounds(0,0,50,20);
+        label1.setText("Enter the transaction id ");
+        label1.setFont(new Font("Times New Roman", Font.BOLD, 25));
+
+
+
+        text1.setPreferredSize(new Dimension(200,30));
+        text1.setVisible(true);
+        text1.setBackground(Color.cyan);
+        text1.setFont(new Font("Nunito Sans",Font.BOLD,30));
+
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.setBounds(0,0,100,100);
+        panel.add(label1);
+        panel.add(text1);
+
+
+
+
+
+        panel3 = new JPanel();
+        panel3.setLayout(new FlowLayout(FlowLayout.CENTER));
+        panel3.add(button);
+
+
+        frame2 = new JFrame();
+        frame2.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame2.setSize(800,600);
+        frame2.setVisible(true);
+        frame2.setLayout(new GridLayout(6,1));
+        frame2.add(panel1);
+        frame2.add(panel);
+        frame2.add(panel3);
+        frame2.add(panel4);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        RegisterTableValidation t = new RegisterTableValidation();
+
+
+        if(e.getSource() == button){
+            if(text1.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Enter valid input", "Notification", JOptionPane.WARNING_MESSAGE);
+            }
+            else{
+                int i;
+                i = Integer.parseInt(text1.getText());
+                if(t.validate(i)) {
+                    new ReturnbookTable(text1.getText());
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Record not found", "Notification", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+
+        }
+        if(e.getSource() == button1){
+            frame2.dispose();
+        }
+
+    }
+}
